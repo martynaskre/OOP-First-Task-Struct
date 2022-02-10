@@ -29,7 +29,9 @@ public:
     std::string getLastName();
     int getHomeworkCount();
 
-    double calculateAverage();
+    double calculateHomeworkAverage();
+    double calculateHomeworkMedian();
+    double calculateResult(double homeworkMark);
 };
 
 

@@ -16,6 +16,9 @@ void Application::run() {
     // processing student count....
     this->processStudentCount();
 
+    // processing calculation mode...
+    this->processCalculationMode();
+
     // processing individual students...
     this->processIndividualStudent();
 
@@ -68,10 +71,39 @@ std::string Application::gatherStringValue(std::string title, std::string error)
     return value;
 }
 
+bool Application::gatherBoolValue(std::string title, std::string error) {
+    std::string textValue;
+
+    do {
+        std::cout << title;
+        std::cin >> textValue;
+
+        if (textValue != "y" && textValue != "n") {
+            std::cout << error << std::endl;
+        }
+    } while (textValue != "y" && textValue != "n");
+
+    return textValue == "y";
+}
+
 void Application::processStudentCount() {
     int count = this->gatherIntValue("Iveskite studentu skaiciu: ", "Neteisingas studentu skaicius.");
 
     this->setStudentCount(count);
+}
+
+void Application::processCalculationMode() {
+    bool useAverage = this->gatherBoolValue("Ar norite skaiciuoti vidurki? (y arba n): ", "Neteisingas atsakymo formatas.");
+
+    if (useAverage) {
+        std::cout << "Programa skaiciuos studentu vidurki." << std::endl;
+
+        this->calculationMode = average;
+    } else {
+        std::cout << "Programa skaiciuos studentu mediana." << std::endl;
+
+        this->calculationMode = median;
+    }
 }
 
 void Application::processIndividualStudent() {
@@ -96,13 +128,31 @@ void Application::processIndividualStudent() {
 void Application::displayData() {
     std::cout << std::left << std::setw(20) << "Vardas";
     std::cout << std::left << std::setw(20) << "Pavarde";
-    std::cout << "Galutinis (Vid.)" << std::endl;
+
+    if (this->calculationMode == median) {
+        std::cout << "Galutinis (Med.)" << std::endl;
+    } else {
+        std::cout << "Galutinis (Vid.)" << std::endl;
+    }
+
     std::cout << "--------------------------------------------------------" << std::endl;
 
     for (int i = 0; i < this->studentCount; i++) {
         Student *student = &this->students[i];
 
         std::cout << std::left << std::setw(20) << student->getFirstName() << std::left << std::setw(20) << student->getLastName();
-        std::cout << std::setprecision(2) << student->calculateAverage() << std::endl;
+        std::cout << std::setprecision(2);
+
+        if (this->calculationMode == median) {
+            std::cout << student->calculateResult(
+                student->calculateHomeworkMedian()
+            );
+        } else {
+            std::cout << student->calculateResult(
+                    student->calculateHomeworkAverage()
+            );
+        }
+
+        std::cout << std::endl;
     }
 }

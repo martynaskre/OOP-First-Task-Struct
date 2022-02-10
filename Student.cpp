@@ -4,6 +4,7 @@
 
 #include "Student.h"
 #include <utility>
+#include <iostream>
 
 Student &Student::setFirstName(std::string firstName) {
     this->firstName = firstName;
@@ -48,7 +49,7 @@ int Student::getHomeworkCount() {
     return this->homeworkCount;
 }
 
-double Student::calculateAverage() {
+double Student::calculateHomeworkAverage() {
     double average = 0;
 
     for (int i = 0; i < this->homeworkCount; i++) {
@@ -58,4 +59,18 @@ double Student::calculateAverage() {
     average /= this->homeworkCount;
 
     return AVERAGE_WEIGHT * average + EXAM_WEIGHT * this->examResult;
+}
+
+double Student::calculateHomeworkMedian() {
+    std::sort(this->homeworks, this->homeworks + this->homeworkCount);
+
+    if (this->homeworkCount % 2 != 0) {
+        return (double) this->homeworks[this->homeworkCount / 2];
+    }
+
+    return (double) (this->homeworks[(this->homeworkCount - 1) / 2] + this->homeworks[this->homeworkCount / 2]) / 2;
+}
+
+double Student::calculateResult(double homeworkMark) {
+    return AVERAGE_WEIGHT * homeworkMark + EXAM_WEIGHT * this->examResult;
 }

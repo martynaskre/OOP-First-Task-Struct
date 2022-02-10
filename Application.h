@@ -9,8 +9,14 @@
 #include <fstream>
 #include "Student.h"
 
+enum CalculationMode {
+    average,
+    median
+};
+
 class Application {
     int studentCount;
+    CalculationMode calculationMode;
     Student *students;
 
 public:
@@ -21,8 +27,10 @@ protected:
     int gatherIntValue(std::string title, std::string error);
     int gatherMarkValue(std::string title, std::string error);
     std::string gatherStringValue(std::string title, std::string error);
+    bool gatherBoolValue(std::string title, std::string error);
 
     void processStudentCount();
+    void processCalculationMode();
     void processIndividualStudent();
     void displayData();
 };
