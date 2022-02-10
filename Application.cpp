@@ -5,6 +5,10 @@
 #include <iostream>
 #include "Application.h"
 
+Application::Application() {
+    srand(time(NULL));
+}
+
 Application &Application::setStudentCount(int count) {
     this->studentCount = count;
     this->students = new Student[count];
@@ -114,14 +118,37 @@ void Application::processIndividualStudent() {
             .setLastName(this->gatherStringValue("Iveskite studento pavarde: ", "Studento pavarde tuscia."))
             .setHomeworkCount(this->gatherIntValue("Iveskite namu darbu skaiciu: ", "Neteisingas namu darbu skaicius."));
 
+        bool enterMarksManually = this->gatherBoolValue("Ar norite pazymius vesti ranka? (y arba n): ", "Neteisingas formatas.");
+
         for (int x = 0; x < student->getHomeworkCount(); x++) {
-            student->setHomeworkResult(
-                x,
-                this->gatherMarkValue("Iveskite namu darbo rezultata: ", "Neteisingas namu darbo rezultatas.")
-            );
+            if (enterMarksManually) {
+                student->setHomeworkResult(
+                        x,
+                        this->gatherMarkValue("Iveskite namu darbo rezultata: ", "Neteisingas namu darbo rezultatas.")
+                );
+            } else {
+                int homeworkMark = this->generateMark();
+
+                std::cout << "Sugeneruotas namu darbo rezultatas: " << homeworkMark << std::endl;
+
+                student->setHomeworkResult(
+                        x,
+                        homeworkMark
+                );
+            }
         }
 
-        student->setExamResult(this->gatherMarkValue("Iveskite egzamino rezultata: ", "Neteisingas egzamino rezultatas."));
+        bool enterExamManually = this->gatherBoolValue("Ar norite egzamino rezultata vesti ranka? (y arba n): ", "Neteisingas formatas.");
+
+        if (enterExamManually) {
+            student->setExamResult(this->gatherMarkValue("Iveskite egzamino rezultata: ", "Neteisingas egzamino rezultatas."));
+        } else {
+            int examMark = this->generateMark();
+
+            std::cout << "Sugeneruotas egzamino rezultatas: " << examMark << std::endl;
+
+            student->setExamResult(examMark);
+        }
     }
 }
 
@@ -155,4 +182,8 @@ void Application::displayData() {
 
         std::cout << std::endl;
     }
+}
+
+int Application::generateMark() {
+    return 1 + rand() % 10;
 }

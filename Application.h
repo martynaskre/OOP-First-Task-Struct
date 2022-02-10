@@ -20,6 +20,7 @@ class Application {
     Student *students;
 
 public:
+    Application();
     Application& setStudentCount(int count);
     void run();
 
@@ -33,6 +34,8 @@ protected:
     void processCalculationMode();
     void processIndividualStudent();
     void displayData();
+
+    int generateMark();
 };
 
 
