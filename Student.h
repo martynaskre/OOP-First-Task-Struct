@@ -7,6 +7,7 @@
 
 
 #include <string>
+#include <vector>
 
 class Student {
     const double AVERAGE_WEIGHT = 0.4;
@@ -14,20 +15,17 @@ class Student {
 
     std::string firstName;
     std::string lastName;
-    int homeworkCount;
+    std::vector<int> homeworks;
     int examResult;
-    int *homeworks;
 
 public:
     Student& setFirstName(std::string firstName);
     Student& setLastName(std::string lastName);
-    Student& setHomeworkCount(int homeworkCount);
-    Student& setHomeworkResult(int position, int mark);
+    Student& setHomeworkResult(int mark);
     Student& setExamResult(int mark);
 
     std::string getFirstName();
     std::string getLastName();
-    int getHomeworkCount();
 
     double calculateHomeworkAverage();
     double calculateHomeworkMedian();

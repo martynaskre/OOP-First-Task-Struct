@@ -18,15 +18,8 @@ Student &Student::setLastName(std::string lastName) {
     return *this;
 }
 
-Student &Student::setHomeworkCount(int homeworkCount) {
-    this->homeworkCount = homeworkCount;
-    this->homeworks = new int[homeworkCount];
-
-    return *this;
-}
-
-Student &Student::setHomeworkResult(int position, int mark) {
-    this->homeworks[position] = mark;
+Student &Student::setHomeworkResult(int mark) {
+    this->homeworks.push_back(mark);
 
     return *this;
 }
@@ -45,30 +38,26 @@ std::string Student::getLastName() {
     return this->lastName;
 }
 
-int Student::getHomeworkCount() {
-    return this->homeworkCount;
-}
-
 double Student::calculateHomeworkAverage() {
     double average = 0;
 
-    for (int i = 0; i < this->homeworkCount; i++) {
+    for (int i = 0; i < this->homeworks.size(); i++) {
         average += this->homeworks[i];
     }
 
-    average /= this->homeworkCount;
+    average /= this->homeworks.size();
 
     return AVERAGE_WEIGHT * average + EXAM_WEIGHT * this->examResult;
 }
 
 double Student::calculateHomeworkMedian() {
-    std::sort(this->homeworks, this->homeworks + this->homeworkCount);
+    std::sort(this->homeworks.begin(), this->homeworks.end());
 
-    if (this->homeworkCount % 2 != 0) {
-        return (double) this->homeworks[this->homeworkCount / 2];
+    if (this->homeworks.size() % 2 != 0) {
+        return (double) this->homeworks[this->homeworks.size() / 2];
     }
 
-    return (double) (this->homeworks[(this->homeworkCount - 1) / 2] + this->homeworks[this->homeworkCount / 2]) / 2;
+    return (double) (this->homeworks[(this->homeworks.size() - 1) / 2] + this->homeworks[this->homeworks.size() / 2]) / 2;
 }
 
 double Student::calculateResult(double homeworkMark) {

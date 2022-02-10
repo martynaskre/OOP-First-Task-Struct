@@ -7,6 +7,7 @@
 
 
 #include <fstream>
+#include <vector>
 #include "Student.h"
 
 enum CalculationMode {
@@ -15,13 +16,11 @@ enum CalculationMode {
 };
 
 class Application {
-    int studentCount;
+    std::vector<Student> students;
     CalculationMode calculationMode;
-    Student *students;
 
 public:
     Application();
-    Application& setStudentCount(int count);
     void run();
 
 protected:
@@ -30,7 +29,6 @@ protected:
     std::string gatherStringValue(std::string title, std::string error);
     bool gatherBoolValue(std::string title, std::string error);
 
-    void processStudentCount();
     void processCalculationMode();
     void processIndividualStudent();
     void displayData();
