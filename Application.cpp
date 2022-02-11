@@ -55,7 +55,7 @@ std::string Application::gatherStringValue(std::string title, std::string error)
 
     do {
         std::cout << title;
-        std::cin >> value;
+        std::getline(std::cin, value);
 
         if (value.empty()) {
             std::cout << error << std::endl;
@@ -70,7 +70,7 @@ bool Application::gatherBoolValue(std::string title, std::string error) {
 
     do {
         std::cout << title;
-        std::cin >> textValue;
+        std::getline(std::cin, textValue);
 
         if (textValue != "y" && textValue != "n") {
             std::cout << error << std::endl;
