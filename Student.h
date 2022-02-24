@@ -10,8 +10,8 @@
 #include <vector>
 
 class Student {
-    const double AVERAGE_WEIGHT = 0.4;
-    const double EXAM_WEIGHT = 0.6;
+    constexpr static const double AVERAGE_WEIGHT = 0.4;
+    constexpr static const double EXAM_WEIGHT = 0.6;
 
     std::string firstName;
     std::string lastName;
