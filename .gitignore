@@ -76,3 +76,5 @@ fabric.properties
 
 #CMake Debug
 /cmake-build-debug
+
+.DS_STORE
