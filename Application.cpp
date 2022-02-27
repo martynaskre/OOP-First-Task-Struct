@@ -40,6 +40,9 @@ int Application::gatherIntValue(std::string title, std::string error) {
         std::cout << title;
         std::cin >> value;
 
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
         if (value <= 0) {
             std::cout << error << std::endl;
         }
@@ -55,7 +58,8 @@ int Application::gatherMarkValue(std::string title, std::string error) {
         std::cout << title;
         std::cin >> value;
 
-        std::cout << value << std::endl;
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
         if (value <= 0 || value > 10) {
             std::cout << error << std::endl;
@@ -154,9 +158,11 @@ void Application::processIndividualStudent() {
         student.setFirstName(this->gatherStringValue("Iveskite studento varda: ", "Studento vardas tuscias."))
                 .setLastName(this->gatherStringValue("Iveskite studento pavarde: ", "Studento pavarde tuscia."));
 
+        int marksCount = this->gatherIntValue("Iveskite pazymiu skaiciu: ", "Neteisingas pazymiu skaicius.");
+
         bool enterMarksManually = this->gatherBoolValue("Ar norite pazymius vesti ranka? (y arba n): ", "Neteisingas formatas.");
 
-        do {
+        for (int i = 0; i < marksCount; i++) {
             if (enterMarksManually) {
                 student.setHomeworkResult(
                         this->gatherMarkValue("Iveskite namu darbo rezultata: ", "Neteisingas namu darbo rezultatas.")
@@ -168,7 +174,7 @@ void Application::processIndividualStudent() {
 
                 student.setHomeworkResult(homeworkMark);
             }
-        } while (this->gatherBoolValue("Ar norite ivesti namu darba? (y arba n): ", "Neteisingas formatas."));
+        }
 
         bool enterExamManually = this->gatherBoolValue("Ar norite egzamino rezultata vesti ranka? (y arba n): ", "Neteisingas formatas.");
 
