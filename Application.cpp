@@ -3,6 +3,7 @@
 //
 
 #include <iostream>
+#include <sstream>
 #include "Application.h"
 
 Application::Application() {
@@ -10,11 +11,23 @@ Application::Application() {
 }
 
 void Application::run() {
-    // processing calculation mode...
-    this->processCalculationMode();
+    // selecting data source
+    this->selectDataSource();
+
+    if (this->dataSource == prompt) {
+        // processing calculation mode...
+        this->processCalculationMode();
+    }
 
     // processing individual students...
-    this->processIndividualStudent();
+    if (this->dataSource == prompt) {
+        this->processIndividualStudent();
+    } else {
+        this->processStudentsFromFile();
+    }
+
+    // sorting students...
+    this->sortStudents();
 
     // displaying data...
     this->displayData();
@@ -80,6 +93,36 @@ bool Application::gatherBoolValue(std::string title, std::string error) {
     return textValue == "y";
 }
 
+void Application::selectDataSource() {
+    bool useFile = this->gatherBoolValue("Ar duomenis uzkrauti is failo? (y arba n): ", "Neteisingas atsakymo formatas.");
+
+    if (useFile) {
+        this->dataSource = file;
+
+        this->selectFile();
+    } else {
+        this->dataSource = prompt;
+    }
+}
+
+void Application::selectFile() {
+    std::string filename;
+    bool errorOccurred = true;
+
+    while (errorOccurred) {
+        std::cout << "Iveskite failo pavadinima[numatysis pavadinimas: studentai.txt]: ";
+        std::getline(std::cin, filename);
+
+        if (filename.empty()) {
+            filename = "studentai1.txt";
+        }
+
+        this->reader.open(filename);
+
+        errorOccurred = false;
+    }
+}
+
 void Application::processCalculationMode() {
     bool useAverage = this->gatherBoolValue("Ar norite skaiciuoti vidurki? (y arba n): ", "Neteisingas atsakymo formatas.");
 
@@ -138,27 +181,47 @@ void Application::displayData() {
     std::cout << std::left << std::setw(20) << "Vardas";
     std::cout << std::left << std::setw(20) << "Pavarde";
 
-    if (this->calculationMode == median) {
-        std::cout << "Galutinis (Med.)" << std::endl;
+    if (this->dataSource == prompt) {
+        if (this->calculationMode == median) {
+            std::cout << "Galutinis (Med.)" << std::endl;
+        } else {
+            std::cout << "Galutinis (Vid.)" << std::endl;
+        }
     } else {
-        std::cout << "Galutinis (Vid.)" << std::endl;
+        std::cout << std::left << std::setw(20) << "Galutinis (Vid.)";
+        std::cout << std::left << std::setw(20) << "Galutinis (Med.)" << std::endl;
     }
 
-    std::cout << "--------------------------------------------------------" << std::endl;
+    if (this->dataSource == prompt) {
+        std::cout << "--------------------------------------------------------" << std::endl;
+    } else {
+        std::cout << "----------------------------------------------------------------------------" << std::endl;
+    }
 
     for (int i = 0; i < this->students.size(); i++) {
         Student *student = &this->students[i];
 
-        std::cout << std::left << std::setw(20) << student->getFirstName() << std::left << std::setw(20) << student->getLastName();
+        std::cout << std::left << std::setw(20) << student->getFirstName();
+        std::cout << std::left << std::setw(20) << student->getLastName();
         std::cout << std::setprecision(2);
 
-        if (this->calculationMode == median) {
-            std::cout << student->calculateResult(
-                student->calculateHomeworkMedian()
-            );
+        if (this->dataSource == prompt) {
+            if (this->calculationMode == median) {
+                std::cout << student->calculateResult(
+                        student->calculateHomeworkMedian()
+                );
+            } else {
+                std::cout << student->calculateResult(
+                        student->calculateHomeworkAverage()
+                );
+            }
         } else {
-            std::cout << student->calculateResult(
+            std::cout << std::left << std::setw(20) << student->calculateResult(
                     student->calculateHomeworkAverage()
+            );
+
+            std::cout << std::left << std::setw(20) << student->calculateResult(
+                    student->calculateHomeworkMedian()
             );
         }
 
@@ -168,4 +231,41 @@ void Application::displayData() {
 
 int Application::generateMark() {
     return 1 + rand() % 10;
+}
+
+void Application::processStudentsFromFile() {
+    std::string line;
+
+    this->reader.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+    while (std::getline(this->reader, line)) {
+        Student student;
+
+        std::istringstream lineStream(line);
+        std::string firstName, lastName;
+
+        lineStream >> firstName >> lastName;
+
+        student.setFirstName(firstName)
+            .setLastName(lastName);
+
+        std::vector<int> marks;
+        int mark;
+
+        while (lineStream >> mark) {
+            marks.push_back(mark);
+        }
+
+        student.setExamResult(marks.back());
+
+        marks.pop_back();
+
+        student.setHomeworkResults(marks);
+
+        this->students.push_back(student);
+    }
+}
+
+void Application::sortStudents() {
+    std::sort(this->students.begin(), this->students.end(), Student::studentSorter);
 }

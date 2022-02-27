@@ -15,9 +15,16 @@ enum CalculationMode {
     median
 };
 
+enum DataSource {
+    file,
+    prompt
+};
+
 class Application {
     std::vector<Student> students;
     CalculationMode calculationMode;
+    DataSource dataSource;
+    std::ifstream reader;
 
 public:
     Application();
@@ -29,9 +36,13 @@ protected:
     std::string gatherStringValue(std::string title, std::string error);
     bool gatherBoolValue(std::string title, std::string error);
 
+    void selectDataSource();
+    void selectFile();
     void processCalculationMode();
     void processIndividualStudent();
+    void processStudentsFromFile();
     void displayData();
+    void sortStudents();
 
     int generateMark();
 };
