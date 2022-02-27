@@ -55,6 +55,8 @@ int Application::gatherMarkValue(std::string title, std::string error) {
         std::cout << title;
         std::cin >> value;
 
+        std::cout << value << std::endl;
+
         if (value <= 0 || value > 10) {
             std::cout << error << std::endl;
         }
@@ -114,12 +116,20 @@ void Application::selectFile() {
         std::getline(std::cin, filename);
 
         if (filename.empty()) {
-            filename = "studentai1.txt";
+            filename = "studentai.txt";
         }
+        
+        try {
+            this->reader.open(filename);
 
-        this->reader.open(filename);
+            if (this->reader.fail()) {
+                throw std::invalid_argument("Klaida! Neteisingas failo pavadinimas.");
+            }
 
-        errorOccurred = false;
+            errorOccurred = false;
+        } catch (const std::invalid_argument& e) {
+            std::cout << e.what() << std::endl;
+        }
     }
 }
 
