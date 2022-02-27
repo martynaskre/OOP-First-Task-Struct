@@ -22,6 +22,7 @@ public:
     Student& setFirstName(std::string firstName);
     Student& setLastName(std::string lastName);
     Student& setHomeworkResult(int mark);
+    Student& setHomeworkResults(std::vector<int> homeworks);
     Student& setExamResult(int mark);
 
     std::string getFirstName();
@@ -30,6 +31,8 @@ public:
     double calculateHomeworkAverage();
     double calculateHomeworkMedian();
     double calculateResult(double homeworkMark);
+
+    static bool studentSorter(Student student1, Student student2);
 };
 
 

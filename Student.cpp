@@ -24,6 +24,12 @@ Student &Student::setHomeworkResult(int mark) {
     return *this;
 }
 
+Student &Student::setHomeworkResults(std::vector<int> homeworks) {
+    this->homeworks = std::move(homeworks);
+
+    return *this;
+}
+
 Student &Student::setExamResult(int mark) {
     this->examResult = mark;
 
@@ -62,4 +68,8 @@ double Student::calculateHomeworkMedian() {
 
 double Student::calculateResult(double homeworkMark) {
     return AVERAGE_WEIGHT * homeworkMark + EXAM_WEIGHT * this->examResult;
+}
+
+bool Student::studentSorter(Student student1, Student student2) {
+    return (student1.getFirstName() < student2.getFirstName());
 }
