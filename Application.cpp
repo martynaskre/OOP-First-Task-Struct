@@ -8,26 +8,35 @@
 #include "Faker.h"
 
 void Application::run() {
-    // selecting data source
-    this->selectDataSource();
+    // selecting program mode...
+    this->selectProgramMode();
 
-    if (this->dataSource == prompt) {
-        // processing calculation mode...
-        this->processCalculationMode();
-    }
+    if (this->programMode == calculation) {
+        // selecting data source...
+        this->selectDataSource();
 
-    // processing individual students...
-    if (this->dataSource == prompt) {
-        this->processIndividualStudent();
+        if (this->dataSource == prompt) {
+            // processing calculation mode...
+            this->processCalculationMode();
+        }
+
+        // processing individual students...
+        if (this->dataSource == prompt) {
+            this->processIndividualStudent();
+        } else {
+            this->processStudentsFromFile();
+        }
+
+        // sorting students...
+        this->sortStudents();
+
+        // displaying data...
+        this->displayData();
     } else {
-        this->processStudentsFromFile();
+        this->selectSeedFile();
+
+        this->seedStudents();
     }
-
-    // sorting students...
-    this->sortStudents();
-
-    // displaying data...
-    this->displayData();
 }
 
 int Application::gatherIntValue(std::string title, std::string error) {
@@ -273,8 +282,81 @@ void Application::processStudentsFromFile() {
 
         this->students.push_back(student);
     }
+
+    this->reader.close();
 }
 
 void Application::sortStudents() {
     std::sort(this->students.begin(), this->students.end(), Student::studentSorter);
+}
+
+void Application::selectProgramMode() {
+    bool seedData = this->gatherBoolValue("Ar generuoti studentu duomenis? (y arba n): ", "Neteisingas atsakymo formatas.");
+
+    this->programMode = (seedData)
+            ? seeding
+            : calculation;
+}
+
+void Application::selectSeedFile() {
+    std::string filename;
+    bool errorOccurred = true;
+
+    while (errorOccurred) {
+        std::cout << "Iveskite failo pavadinima[numatysis pavadinimas: studentai.txt]: ";
+        std::getline(std::cin, filename);
+
+        if (filename.empty()) {
+            filename = "studentai.txt";
+        }
+
+        try {
+            this->writer.open(filename);
+
+            if (this->writer.fail()) {
+                throw std::invalid_argument("Klaida! Neteisingas failo pavadinimas.");
+            }
+
+            errorOccurred = false;
+        } catch (const std::invalid_argument& e) {
+            std::cout << e.what() << std::endl;
+        }
+    }
+}
+
+void Application::seedStudents() {
+    int studentsToSeed = this->gatherIntValue("Koki skaiciu studentu norite sugeneruoti: ", "Neteisingas atsakymo formatas");
+    int homeworksToSeed = this->gatherIntValue("Koki skaiciu namu darbu sugeneruoti: ", "Neteisingas atsakymo formatas");
+
+    std::stringstream heading;
+
+    heading << std::left << std::setw(20) << "Vardas";
+    heading << std::left << std::setw(20) << "Pavarde";
+
+    for (int i = 1; i <= homeworksToSeed; i++) {
+        heading << std::left << "ND" << std::setw(8) << i;
+    }
+
+    heading << std::left << std::setw(10) << "Egz." << std::endl;
+
+    this->writer.write(heading.str().c_str(), heading.str().length());
+
+    for (int i = 0; i < studentsToSeed; i++) {
+        std::stringstream studentStream;
+
+        Student student = Student::generateStudent(homeworksToSeed);
+
+        studentStream << std::left << std::setw(20) << student.getFirstName();
+        studentStream << std::left << std::setw(20) << student.getLastName();
+
+        for (int x = 0; x < homeworksToSeed; x++) {
+            studentStream << std::left << std::setw(10) << student.getHomeworkResults()[x];
+        }
+
+        studentStream << std::left << std::setw(10) << student.getExamResult() << std::endl;
+
+        this->writer.write(studentStream.str().c_str(), studentStream.str().length());
+    }
+
+    this->writer.close();
 }

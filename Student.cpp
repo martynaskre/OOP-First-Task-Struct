@@ -5,6 +5,7 @@
 #include "Student.h"
 #include <utility>
 #include <iostream>
+#include "Faker.h"
 
 Student &Student::setFirstName(std::string firstName) {
     this->firstName = firstName;
@@ -44,6 +45,14 @@ std::string Student::getLastName() {
     return this->lastName;
 }
 
+std::vector<int> Student::getHomeworkResults() {
+    return this->homeworks;
+}
+
+int Student::getExamResult() {
+    return this->examResult;
+}
+
 double Student::calculateHomeworkAverage() {
     double average = 0;
 
@@ -72,4 +81,18 @@ double Student::calculateResult(double homeworkMark) {
 
 bool Student::studentSorter(Student student1, Student student2) {
     return (student1.getFirstName() < student2.getFirstName());
+}
+
+Student Student::generateStudent(int homeworksCount) {
+    Student student;
+
+    for (int i = 0; i < homeworksCount; i++) {
+        student.setHomeworkResult(Faker::randomMark());
+    }
+
+    student.setFirstName(Faker::randomFirstName())
+        .setLastName(Faker::randomLastName())
+        .setExamResult(Faker::randomMark());
+
+    return student;
 }

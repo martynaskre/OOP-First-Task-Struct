@@ -120,6 +120,6 @@ std::string Faker::randomFullName() {
 }
 
 int Faker::randomMark() {
-    return Faker::randomNumber(0, 10);
+    return Faker::randomNumber(1, 10);
 }
 

@@ -27,12 +27,16 @@ public:
 
     std::string getFirstName();
     std::string getLastName();
+    std::vector<int> getHomeworkResults();
+    int getExamResult();
 
     double calculateHomeworkAverage();
     double calculateHomeworkMedian();
     double calculateResult(double homeworkMark);
 
     static bool studentSorter(Student student1, Student student2);
+
+    static Student generateStudent(int homeworksCount);
 };
 
 

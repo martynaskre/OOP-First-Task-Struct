@@ -20,11 +20,18 @@ enum DataSource {
     prompt
 };
 
+enum ProgramMode {
+    seeding,
+    calculation
+};
+
 class Application {
     std::vector<Student> students;
     CalculationMode calculationMode;
     DataSource dataSource;
+    ProgramMode programMode;
     std::ifstream reader;
+    std::ofstream writer;
 
 public:
     void run();
@@ -35,6 +42,7 @@ protected:
     std::string gatherStringValue(std::string title, std::string error);
     bool gatherBoolValue(std::string title, std::string error);
 
+    void selectProgramMode();
     void selectDataSource();
     void selectFile();
     void processCalculationMode();
@@ -42,6 +50,8 @@ protected:
     void processStudentsFromFile();
     void displayData();
     void sortStudents();
+    void selectSeedFile();
+    void seedStudents();
 };
 
 
