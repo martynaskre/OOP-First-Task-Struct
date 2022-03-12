@@ -27,7 +27,6 @@ class Application {
     std::ifstream reader;
 
 public:
-    Application();
     void run();
 
 protected:
@@ -43,8 +42,6 @@ protected:
     void processStudentsFromFile();
     void displayData();
     void sortStudents();
-
-    int generateMark();
 };
 
 

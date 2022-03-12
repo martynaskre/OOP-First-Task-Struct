@@ -5,10 +5,7 @@
 #include <iostream>
 #include <sstream>
 #include "Application.h"
-
-Application::Application() {
-    srand(time(NULL));
-}
+#include "Faker.h"
 
 void Application::run() {
     // selecting data source
@@ -168,7 +165,7 @@ void Application::processIndividualStudent() {
                         this->gatherMarkValue("Iveskite namu darbo rezultata: ", "Neteisingas namu darbo rezultatas.")
                 );
             } else {
-                int homeworkMark = this->generateMark();
+                int homeworkMark = Faker::randomMark();
 
                 std::cout << "Sugeneruotas namu darbo rezultatas: " << homeworkMark << std::endl;
 
@@ -181,7 +178,7 @@ void Application::processIndividualStudent() {
         if (enterExamManually) {
             student.setExamResult(this->gatherMarkValue("Iveskite egzamino rezultata: ", "Neteisingas egzamino rezultatas."));
         } else {
-            int examMark = this->generateMark();
+            int examMark = Faker::randomMark();
 
             std::cout << "Sugeneruotas egzamino rezultatas: " << examMark << std::endl;
 
@@ -243,10 +240,6 @@ void Application::displayData() {
 
         std::cout << std::endl;
     }
-}
-
-int Application::generateMark() {
-    return 1 + rand() % 10;
 }
 
 void Application::processStudentsFromFile() {
