@@ -52,6 +52,7 @@ protected:
     void sortStudents();
     void selectSeedFile();
     void seedStudents();
+    void writeSorted(int average, std::string line, bool firstLine);
 };
 
 

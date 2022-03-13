@@ -253,6 +253,15 @@ void Application::displayData() {
 
 void Application::processStudentsFromFile() {
     std::string line;
+    bool firstLine = true;
+
+    int linesCount = std::count(std::istreambuf_iterator<char>(this->reader),
+                                std::istreambuf_iterator<char>(), '\n');
+
+    this->students.reserve(linesCount);
+
+    this->reader.clear();
+    this->reader.seekg(0);
 
     this->reader.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
@@ -281,6 +290,10 @@ void Application::processStudentsFromFile() {
         student.setHomeworkResults(marks);
 
         this->students.push_back(student);
+
+        this->writeSorted(student.calculateResult(student.calculateHomeworkAverage()), line, firstLine);
+
+        firstLine = false;
     }
 
     this->reader.close();
@@ -357,6 +370,24 @@ void Application::seedStudents() {
 
         this->writer.write(studentStream.str().c_str(), studentStream.str().length());
     }
+
+    this->writer.close();
+}
+
+void Application::writeSorted(int average, std::string line, bool firstLine) {
+    std::ios_base::openmode mode = (firstLine)
+            ? std::ios_base::out
+            : std::ios_base::app;
+
+    if (average < 5) {
+        this->writer.open("vargseliai.txt", mode);
+    } else if (average >= 5) {
+        this->writer.open("kietuoliai.txt", mode);
+    }
+
+    line.append("\n");
+
+    this->writer.write(line.c_str(), line.length());
 
     this->writer.close();
 }
