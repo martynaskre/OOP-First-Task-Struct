@@ -6,8 +6,11 @@
 #include <sstream>
 #include "Application.h"
 #include "Faker.h"
+#include "Benchmark.h"
 
 void Application::run() {
+    Benchmark::start("application", "Programos veikimo laikas: ");
+
     // selecting program mode...
     this->selectProgramMode();
 
@@ -24,7 +27,11 @@ void Application::run() {
         if (this->dataSource == prompt) {
             this->processIndividualStudent();
         } else {
+            Benchmark::start("reading", "Studentu is failo nuskaitymo laikas: ");
+
             this->processStudentsFromFile();
+
+            Benchmark::end("reading");
         }
 
         // sorting students...
@@ -33,10 +40,18 @@ void Application::run() {
         // displaying data...
         this->displayData();
     } else {
+        // selecting seed file...
         this->selectSeedFile();
 
+        Benchmark::start("seeding", "Studentu generavimo laikas: ");
+
+        // seeding students...
         this->seedStudents();
+
+        Benchmark::end("seeding");
     }
+
+    Benchmark::end("application");
 }
 
 int Application::gatherIntValue(std::string title, std::string error) {
@@ -296,6 +311,9 @@ void Application::processStudentsFromFile() {
         firstLine = false;
     }
 
+    Benchmark::end("vargseliai");
+    Benchmark::end("kietuoliai");
+
     this->reader.close();
 }
 
@@ -381,8 +399,16 @@ void Application::writeSorted(int average, std::string line, bool firstLine) {
 
     if (average < 5) {
         this->writer.open("vargseliai.txt", mode);
+
+        if (firstLine) {
+            Benchmark::start("vargseliai", "Vargseliu failo rasymo laikas: ");
+        }
     } else if (average >= 5) {
         this->writer.open("kietuoliai.txt", mode);
+
+        if (firstLine) {
+            Benchmark::start("kietuoliai", "Kietuoliu failo rasymo laikas: ");
+        }
     }
 
     line.append("\n");
