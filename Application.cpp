@@ -35,10 +35,32 @@ void Application::run() {
         }
 
         // sorting students...
+        Benchmark::start("sorting", "Studentu rusiavimo didejimo tvarka laikas: ");
+
         this->sortStudents();
 
-        // displaying data...
-        this->displayData();
+        Benchmark::end("sorting");
+
+        // splitting students into separate vectors...
+        Benchmark::start("splitting", "Studentu perskyrimo i dvi grupes laikas: ");
+
+        this->splitStudents();
+
+        Benchmark::end("splitting");
+
+        // writing "kietuoliai"...
+        Benchmark::start("kietuoliai", "Kietuoliu i faila irasymo laikas: ");
+
+        this->writeData("kietuoliai.txt", this->smartStudents);
+
+        Benchmark::end("kietuoliai");
+
+        // writing "vargseliai"...
+        Benchmark::start("vargseliai", "Vargseliu i faila irasymo laikas: ");
+
+        this->writeData("vargseliai.txt", this->smartStudents);
+
+        Benchmark::end("vargseliai");
     } else {
         // selecting seed file...
         this->selectSeedFile();
@@ -213,62 +235,73 @@ void Application::processIndividualStudent() {
     } while (this->gatherBoolValue("Ar norite prideti nauja studenta? (y arba n): ", "Neteisingas formatas."));
 }
 
-void Application::displayData() {
-    std::cout << std::endl;
-    std::cout << std::left << std::setw(20) << "Vardas";
-    std::cout << std::left << std::setw(20) << "Pavarde";
+void Application::writeData(std::string filename, std::vector<Student>& students) {
+    this->writer.open(filename);
+
+    std::stringstream header;
+
+    header << std::endl;
+    header << std::left << std::setw(20) << "Vardas";
+    header << std::left << std::setw(20) << "Pavarde";
 
     if (this->dataSource == prompt) {
         if (this->calculationMode == median) {
-            std::cout << "Galutinis (Med.)" << std::endl;
+            header << "Galutinis (Med.)" << std::endl;
         } else {
-            std::cout << "Galutinis (Vid.)" << std::endl;
+            header << "Galutinis (Vid.)" << std::endl;
         }
     } else {
-        std::cout << std::left << std::setw(20) << "Galutinis (Vid.)";
-        std::cout << std::left << std::setw(20) << "Galutinis (Med.)" << std::endl;
+        header << std::left << std::setw(20) << "Galutinis (Vid.)";
+        header << std::left << std::setw(20) << "Galutinis (Med.)" << std::endl;
     }
 
     if (this->dataSource == prompt) {
-        std::cout << "--------------------------------------------------------" << std::endl;
+        header << "--------------------------------------------------------" << std::endl;
     } else {
-        std::cout << "----------------------------------------------------------------------------" << std::endl;
+        header << "----------------------------------------------------------------------------" << std::endl;
     }
 
-    for (int i = 0; i < this->students.size(); i++) {
-        Student *student = &this->students[i];
+    this->writer.write(header.str().c_str(), header.str().length());
 
-        std::cout << std::left << std::setw(20) << student->getFirstName();
-        std::cout << std::left << std::setw(20) << student->getLastName();
-        std::cout << std::setprecision(2);
+    for (auto & i : students) {
+        std::stringstream studentLine;
+
+        Student *student = &i;
+
+        studentLine << std::left << std::setw(20) << student->getFirstName();
+        studentLine << std::left << std::setw(20) << student->getLastName();
+        studentLine << std::setprecision(2);
 
         if (this->dataSource == prompt) {
             if (this->calculationMode == median) {
-                std::cout << student->calculateResult(
+                studentLine << student->calculateResult(
                         student->calculateHomeworkMedian()
                 );
             } else {
-                std::cout << student->calculateResult(
+                studentLine << student->calculateResult(
                         student->calculateHomeworkAverage()
                 );
             }
         } else {
-            std::cout << std::left << std::setw(20) << student->calculateResult(
+            studentLine << std::left << std::setw(20) << student->calculateResult(
                     student->calculateHomeworkAverage()
             );
 
-            std::cout << std::left << std::setw(20) << student->calculateResult(
+            studentLine << std::left << std::setw(20) << student->calculateResult(
                     student->calculateHomeworkMedian()
             );
         }
 
-        std::cout << std::endl;
+        studentLine << std::endl;
+
+        this->writer.write(studentLine.str().c_str(), studentLine.str().length());
     }
+
+    this->writer.close();
 }
 
 void Application::processStudentsFromFile() {
     std::string line;
-    bool firstLine = true;
 
     int linesCount = std::count(std::istreambuf_iterator<char>(this->reader),
                                 std::istreambuf_iterator<char>(), '\n');
@@ -305,14 +338,7 @@ void Application::processStudentsFromFile() {
         student.setHomeworkResults(marks);
 
         this->students.push_back(student);
-
-        this->writeSorted(student.calculateResult(student.calculateHomeworkAverage()), line, firstLine);
-
-        firstLine = false;
     }
-
-    Benchmark::end("vargseliai");
-    Benchmark::end("kietuoliai");
 
     this->reader.close();
 }
@@ -392,28 +418,16 @@ void Application::seedStudents() {
     this->writer.close();
 }
 
-void Application::writeSorted(int average, std::string line, bool firstLine) {
-    std::ios_base::openmode mode = (firstLine)
-            ? std::ios_base::out
-            : std::ios_base::app;
+void Application::splitStudents() {
+    for (auto & student : this->students) {
+        double average = student.calculateHomeworkAverage();
 
-    if (average < 5) {
-        this->writer.open("vargseliai.txt", mode);
-
-        if (firstLine) {
-            Benchmark::start("vargseliai", "Vargseliu failo rasymo laikas: ");
-        }
-    } else if (average >= 5) {
-        this->writer.open("kietuoliai.txt", mode);
-
-        if (firstLine) {
-            Benchmark::start("kietuoliai", "Kietuoliu failo rasymo laikas: ");
+        if (average < 5) {
+            this->smartStudents.push_back(student);
+        } else if (average >= 5) {
+            this->dumbStudents.push_back(student);
         }
     }
 
-    line.append("\n");
-
-    this->writer.write(line.c_str(), line.length());
-
-    this->writer.close();
+    this->students.clear();
 }

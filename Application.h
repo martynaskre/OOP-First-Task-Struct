@@ -27,6 +27,8 @@ enum ProgramMode {
 
 class Application {
     std::vector<Student> students;
+    std::vector<Student> smartStudents;
+    std::vector<Student> dumbStudents;
     CalculationMode calculationMode;
     DataSource dataSource;
     ProgramMode programMode;
@@ -48,11 +50,11 @@ protected:
     void processCalculationMode();
     void processIndividualStudent();
     void processStudentsFromFile();
-    void displayData();
+    void writeData(std::string filename, std::vector<Student>& students);
     void sortStudents();
     void selectSeedFile();
     void seedStudents();
-    void writeSorted(int average, std::string line, bool firstLine);
+    void splitStudents();
 };
 
 

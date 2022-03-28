@@ -27,7 +27,7 @@ void Benchmark::end(const std::string& benchmark) {
         std::chrono::steady_clock::time_point timeEnd = std::chrono::steady_clock::now();
 
         std::cout << existingBenchmark->second.title
-                  << std::chrono::duration_cast<std::chrono::seconds> (timeEnd - existingBenchmark->second.start).count()
+                  << std::chrono::duration<double> (timeEnd - existingBenchmark->second.start).count()
                   << "s" << std::endl;
 
         Benchmark::benchmarks.erase(existingBenchmark);
