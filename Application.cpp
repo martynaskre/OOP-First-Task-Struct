@@ -18,50 +18,9 @@ void Application::run() {
         // selecting data source...
         this->selectDataSource();
 
-        if (this->dataSource == prompt) {
-            // processing calculation mode...
-            this->processCalculationMode();
-        }
-
-        // processing individual students...
-        if (this->dataSource == prompt) {
-            this->processIndividualStudent();
-        } else {
-            Benchmark::start("reading", "Studentu is failo nuskaitymo laikas: ");
-
-            this->processStudentsFromFile();
-
-            Benchmark::end("reading");
-        }
-
-        // sorting students...
-        Benchmark::start("sorting", "Studentu rusiavimo didejimo tvarka laikas: ");
-
-        this->sortStudents();
-
-        Benchmark::end("sorting");
-
-        // splitting students into separate vectors...
-        Benchmark::start("splitting", "Studentu perskyrimo i dvi grupes laikas: ");
-
-        this->splitStudents();
-
-        Benchmark::end("splitting");
-
-        // writing "kietuoliai"...
-        Benchmark::start("kietuoliai", "Kietuoliu i faila irasymo laikas: ");
-
-        this->writeData("kietuoliai.txt", this->smartStudents);
-
-        Benchmark::end("kietuoliai");
-
-        // writing "vargseliai"...
-        Benchmark::start("vargseliai", "Vargseliu i faila irasymo laikas: ");
-
-        this->writeData("vargseliai.txt", this->smartStudents);
-
-        Benchmark::end("vargseliai");
-    } else {
+        // performing calculations...
+        this->performCalculation();
+    } else if (this->programMode == seeding) {
         // selecting seed file...
         this->selectSeedFile();
 
@@ -71,6 +30,9 @@ void Application::run() {
         this->seedStudents();
 
         Benchmark::end("seeding");
+    } else {
+        // performing benchmark...
+        this->performBenchmark();
     }
 
     Benchmark::end("application");
@@ -348,11 +310,19 @@ void Application::sortStudents() {
 }
 
 void Application::selectProgramMode() {
-    bool seedData = this->gatherBoolValue("Ar generuoti studentu duomenis? (y arba n): ", "Neteisingas atsakymo formatas.");
+    bool benchmarkData = this->gatherBoolValue("Ar norite testuoti programa? (y arba n): ", "Neteisingas atsakymo formatas.");
 
-    this->programMode = (seedData)
-            ? seeding
-            : calculation;
+    if (benchmarkData) {
+        this->programMode = benchmark;
+
+        return;
+    } else {
+        bool seedData = this->gatherBoolValue("Ar generuoti studentu duomenis? (y arba n): ", "Neteisingas atsakymo formatas.");
+
+        this->programMode = (seedData)
+                            ? seeding
+                            : calculation;
+    }
 }
 
 void Application::selectSeedFile() {
@@ -430,4 +400,71 @@ void Application::splitStudents() {
     }
 
     this->students.clear();
+}
+
+void Application::performCalculation() {
+    if (this->dataSource == prompt) {
+        // processing calculation mode...
+        this->processCalculationMode();
+    }
+
+    // processing individual students...
+    if (this->dataSource == prompt) {
+        this->processIndividualStudent();
+    } else {
+        Benchmark::start("reading", "Studentu is failo nuskaitymo laikas: ");
+
+        this->processStudentsFromFile();
+
+        Benchmark::end("reading");
+    }
+
+    Benchmark::start("sorting", "Studentu rusiavimo didejimo tvarka laikas: ");
+
+    // sorting students...
+    this->sortStudents();
+
+    Benchmark::end("sorting");
+
+    Benchmark::start("splitting", "Studentu perskyrimo i dvi grupes laikas: ");
+
+    // splitting students into separate vectors...
+    this->splitStudents();
+
+    Benchmark::end("splitting");
+
+    Benchmark::start("kietuoliai", "Kietuoliu i faila irasymo laikas: ");
+
+    // writing "kietuoliai"...
+    this->writeData("kietuoliai.txt", this->smartStudents);
+
+    Benchmark::end("kietuoliai");
+
+    Benchmark::start("vargseliai", "Vargseliu i faila irasymo laikas: ");
+
+    // writing "vargseliai"...
+    this->writeData("vargseliai.txt", this->smartStudents);
+
+    Benchmark::end("vargseliai");
+}
+
+void Application::performBenchmark() {
+    std::vector<std::string> files = { "1000.txt", "10000.txt", "100000.txt", "1000000.txt", "10000000.txt" };
+
+    for (auto & file : files) {
+        this->reader.open(file);
+
+        if (this->reader.fail()) {
+            continue;
+        }
+
+        std::cout << file << " testavimas prasideda..." << std::endl;
+
+        this->performCalculation();
+
+        this->smartStudents.clear();
+        this->dumbStudents.clear();
+
+        std::cout << std::endl;
+    }
 }

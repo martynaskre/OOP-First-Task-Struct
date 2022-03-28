@@ -22,7 +22,8 @@ enum DataSource {
 
 enum ProgramMode {
     seeding,
-    calculation
+    calculation,
+    benchmark,
 };
 
 class Application {
@@ -55,6 +56,8 @@ protected:
     void selectSeedFile();
     void seedStudents();
     void splitStudents();
+    void performCalculation();
+    void performBenchmark();
 };
 
 
