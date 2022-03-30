@@ -197,7 +197,7 @@ void Application::processIndividualStudent() {
     } while (this->gatherBoolValue("Ar norite prideti nauja studenta? (y arba n): ", "Neteisingas formatas."));
 }
 
-void Application::writeData(std::string filename, std::vector<Student>& students) {
+void Application::writeData(std::string filename, std::deque<Student>& students) {
     this->writer.open(filename);
 
     std::stringstream header;
@@ -265,13 +265,13 @@ void Application::writeData(std::string filename, std::vector<Student>& students
 void Application::processStudentsFromFile() {
     std::string line;
 
-    int linesCount = std::count(std::istreambuf_iterator<char>(this->reader),
-                                std::istreambuf_iterator<char>(), '\n');
-
-    this->students.reserve(linesCount);
-
-    this->reader.clear();
-    this->reader.seekg(0);
+//    int linesCount = std::count(std::istreambuf_iterator<char>(this->reader),
+//                                std::istreambuf_iterator<char>(), '\n');
+//
+//    this->students.reserve(linesCount);
+//
+//    this->reader.clear();
+//    this->reader.seekg(0);
 
     this->reader.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
