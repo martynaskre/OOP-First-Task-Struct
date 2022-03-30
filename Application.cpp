@@ -197,7 +197,7 @@ void Application::processIndividualStudent() {
     } while (this->gatherBoolValue("Ar norite prideti nauja studenta? (y arba n): ", "Neteisingas formatas."));
 }
 
-void Application::writeData(std::string filename, std::deque<Student>& students) {
+void Application::writeData(std::string filename, std::list<Student>& students) {
     this->writer.open(filename);
 
     std::stringstream header;
@@ -306,7 +306,7 @@ void Application::processStudentsFromFile() {
 }
 
 void Application::sortStudents() {
-    std::sort(this->students.begin(), this->students.end(), Student::studentSorter);
+    this->students.sort(Student::studentSorter);
 }
 
 void Application::selectProgramMode() {

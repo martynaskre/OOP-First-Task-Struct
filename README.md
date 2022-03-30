@@ -5,7 +5,10 @@ This task was created by Martynas Skrebė.
 ## Benchmarking results
 
 ### std::vector
-![Benchmark results](benchmark-vector.png?raw=true "Title")
+![std::vector](benchmark-vector.png?raw=true "Title")
 
 ### std::deque
-![Benchmark results](benchmark-deque.png?raw=true "Title")
+![std::deque](benchmark-deque.png?raw=true "Title")
+
+### std::list
+![std::list](benchmark-list.png?raw=true "Title")
