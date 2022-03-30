@@ -7,7 +7,7 @@
 
 
 #include <fstream>
-#include <list>
+#include <deque>
 #include "Student.h"
 
 enum CalculationMode {
@@ -27,9 +27,9 @@ enum ProgramMode {
 };
 
 class Application {
-    std::list<Student> students;
-    std::list<Student> smartStudents;
-    std::list<Student> dumbStudents;
+    std::deque<Student> students;
+    std::deque<Student> smartStudents;
+    std::deque<Student> dumbStudents;
     CalculationMode calculationMode;
     DataSource dataSource;
     ProgramMode programMode;
@@ -51,7 +51,7 @@ protected:
     void processCalculationMode();
     void processIndividualStudent();
     void processStudentsFromFile();
-    void writeData(std::string filename, std::list<Student>& students);
+    void writeData(std::string filename, std::deque<Student>& students);
     void sortStudents();
     void selectSeedFile();
     void seedStudents();
