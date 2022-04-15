@@ -8,13 +8,13 @@
 #include "Faker.h"
 
 Student &Student::setFirstName(std::string firstName) {
-    this->firstName = firstName;
+    this->firstName = std::move(firstName);
 
     return *this;
 }
 
 Student &Student::setLastName(std::string lastName) {
-    this->lastName = lastName;
+    this->lastName = std::move(lastName);
 
     return *this;
 }
@@ -56,8 +56,8 @@ int Student::getExamResult() {
 double Student::calculateHomeworkAverage() {
     double average = 0;
 
-    for (int i = 0; i < this->homeworks.size(); i++) {
-        average += this->homeworks[i];
+    for (int homework : this->homeworks) {
+        average += homework;
     }
 
     average /= this->homeworks.size();

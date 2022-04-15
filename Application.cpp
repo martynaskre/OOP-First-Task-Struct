@@ -38,7 +38,7 @@ void Application::run() {
     Benchmark::end("application");
 }
 
-int Application::gatherIntValue(std::string title, std::string error) {
+int Application::gatherIntValue(const std::string& title, const std::string& error) {
     int value;
 
     do {
@@ -56,7 +56,7 @@ int Application::gatherIntValue(std::string title, std::string error) {
     return value;
 }
 
-int Application::gatherMarkValue(std::string title, std::string error) {
+int Application::gatherMarkValue(const std::string& title, const std::string& error) {
     int value;
 
     do {
@@ -74,7 +74,7 @@ int Application::gatherMarkValue(std::string title, std::string error) {
     return value;
 }
 
-std::string Application::gatherStringValue(std::string title, std::string error) {
+std::string Application::gatherStringValue(const std::string& title, const std::string& error) {
     std::string value;
 
     do {
@@ -89,7 +89,7 @@ std::string Application::gatherStringValue(std::string title, std::string error)
     return value;
 }
 
-bool Application::gatherBoolValue(std::string title, std::string error) {
+bool Application::gatherBoolValue(const std::string& title, const std::string& error) {
     std::string textValue;
 
     do {
@@ -197,7 +197,7 @@ void Application::processIndividualStudent() {
     } while (this->gatherBoolValue("Ar norite prideti nauja studenta? (y arba n): ", "Neteisingas formatas."));
 }
 
-void Application::writeData(std::string filename, std::deque<Student>& students) {
+void Application::writeData(const std::string& filename, std::deque<Student>& students) {
     this->writer.open(filename);
 
     std::stringstream header;
@@ -264,14 +264,6 @@ void Application::writeData(std::string filename, std::deque<Student>& students)
 
 void Application::processStudentsFromFile() {
     std::string line;
-
-//    int linesCount = std::count(std::istreambuf_iterator<char>(this->reader),
-//                                std::istreambuf_iterator<char>(), '\n');
-//
-//    this->students.reserve(linesCount);
-//
-//    this->reader.clear();
-//    this->reader.seekg(0);
 
     this->reader.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 

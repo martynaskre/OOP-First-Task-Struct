@@ -40,10 +40,10 @@ public:
     void run();
 
 protected:
-    int gatherIntValue(std::string title, std::string error);
-    int gatherMarkValue(std::string title, std::string error);
-    std::string gatherStringValue(std::string title, std::string error);
-    bool gatherBoolValue(std::string title, std::string error);
+    static int gatherIntValue(const std::string& title, const std::string& error);
+    static int gatherMarkValue(const std::string& title, const std::string& error);
+    static std::string gatherStringValue(const std::string& title, const std::string& error);
+    static bool gatherBoolValue(const std::string& title, const std::string& error);
 
     void selectProgramMode();
     void selectDataSource();
@@ -51,7 +51,7 @@ protected:
     void processCalculationMode();
     void processIndividualStudent();
     void processStudentsFromFile();
-    void writeData(std::string filename, std::deque<Student>& students);
+    void writeData(const std::string& filename, std::deque<Student>& students);
     void sortStudents();
     void selectSeedFile();
     void seedStudents();
