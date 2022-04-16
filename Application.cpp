@@ -381,17 +381,13 @@ void Application::seedStudents() {
 }
 
 void Application::splitStudents() {
-    for (auto & student : this->students) {
-        double average = student.calculateHomeworkAverage();
+    auto smartIterator = std::stable_partition(this->students.begin(), this->students.end(), [](Student &student) {
+        return student.calculateResult(student.calculateHomeworkAverage()) <= 5;
+    });
 
-        if (average < 5) {
-            this->smartStudents.push_back(student);
-        } else if (average >= 5) {
-            this->dumbStudents.push_back(student);
-        }
-    }
+    this->smartStudents.insert(this->smartStudents.end(), smartIterator, this->students.end());
 
-    this->students.clear();
+    this->students.erase(smartIterator, this->students.end());
 }
 
 void Application::performCalculation() {
@@ -435,7 +431,7 @@ void Application::performCalculation() {
     Benchmark::start("vargseliai", "Vargseliu i faila irasymo laikas: ");
 
     // writing "vargseliai"...
-    this->writeData("vargseliai.txt", this->smartStudents);
+    this->writeData("vargseliai.txt", this->students);
 
     Benchmark::end("vargseliai");
 }
@@ -456,6 +452,7 @@ void Application::performBenchmark() {
 
         this->smartStudents.clear();
         this->dumbStudents.clear();
+        this->students.clear();
 
         std::cout << std::endl;
     }
