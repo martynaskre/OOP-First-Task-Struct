@@ -382,7 +382,7 @@ void Application::seedStudents() {
 
 void Application::splitStudents() {
     auto smartIterator = std::stable_partition(this->students.begin(), this->students.end(), [](Student &student) {
-        return student.calculateResult(student.calculateHomeworkAverage()) <= 5;
+        return student.calculateHomeworkAverage() <= 5;
     });
 
     this->smartStudents.insert(this->smartStudents.end(), smartIterator, this->students.end());
