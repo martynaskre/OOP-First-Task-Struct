@@ -12,19 +12,19 @@ cmake --build "cmake-build-debug" --target 1_uzd
 
 Benchmarks where performed on 2021 Macbook Pro 14 with M1 Pro (10 CPU core variant) chip and 16GB RAM.
 
-### std::vector
-![std::vector](benchmark-vector.png?raw=true "std::vector")
+### Class based
+![Class based](benchmarks/benchmark-class.png?raw=true "Class based")
 
-### std::deque
-![std::deque](benchmark-deque.png?raw=true "std::deque")
+### Struct based
+![Struct based](benchmarks/benchmark-struct.png?raw=true "Struct based")
 
-### std::list
-![std::list](benchmark-list.png?raw=true "std::list")
+## Benchmarks with different compiler flags
 
-## Strategy benchmarks
+## 01 flag
+![01 flag](benchmarks/benchmark-struct-01.png?raw=true "01 flag")
 
-### First strategy
-![First strategy](benchmark-first-strategy.png?raw=true "First strategy")
+## 02 flag
+![02 flag](benchmarks/benchmark-struct-02.png?raw=true "02 flag")
 
-### Second strategy
-![Second strategy](benchmark-second-strategy.png?raw=true "Second strategy")
+## 03 flag
+![03 flag](benchmarks/benchmark-struct-03.png?raw=true "03 flag")
