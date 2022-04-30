@@ -9,7 +9,7 @@
 #include <string>
 #include <vector>
 
-class Student {
+struct Student {
     constexpr static const double AVERAGE_WEIGHT = 0.4;
     constexpr static const double EXAM_WEIGHT = 0.6;
 

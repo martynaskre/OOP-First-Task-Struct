@@ -26,7 +26,7 @@ enum ProgramMode {
     benchmark,
 };
 
-class Application {
+struct Application {
     std::deque<Student> students;
     std::deque<Student> smartStudents;
     std::deque<Student> dumbStudents;

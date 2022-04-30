@@ -9,7 +9,7 @@
 #include <string>
 #include <random>
 
-class Faker {
+struct Faker {
     static const std::vector<std::string> firstNames;
     static const std::vector<std::string> lastNames;
 

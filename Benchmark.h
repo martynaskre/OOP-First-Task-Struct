@@ -14,7 +14,7 @@ struct BenchmarkResult {
     std::string title;
 };
 
-class Benchmark {
+struct Benchmark {
     static std::map<std::string, BenchmarkResult> benchmarks;
 
 public:
